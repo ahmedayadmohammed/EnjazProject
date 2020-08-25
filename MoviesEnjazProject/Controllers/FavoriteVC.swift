@@ -14,7 +14,6 @@ class FavoriteVC: UITableViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private var movies:[MovieFavorite]?
-    
     lazy var refreshController: UIRefreshControl = {
         let refresher = UIRefreshControl()
         refresher.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -27,17 +26,13 @@ class FavoriteVC: UITableViewController {
         fecthMovies()
         self.tableView.separatorStyle = .none
         self.tableView.addSubview(refreshController)
-    
+        
     }
-    
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         editButton()
     }
-    
-    
     
     @objc func reloadData(){
         let deadline = DispatchTime.now() + .milliseconds(800)
@@ -48,13 +43,11 @@ class FavoriteVC: UITableViewController {
         }
     }
     
-    
     func editButton(){
         if self.movies!.count > 0 {
             let editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(toggleEditing))
             navigationItem.rightBarButtonItem = editButton
         }
-        
     }
     
     @objc private func toggleEditing() {
@@ -66,7 +59,6 @@ class FavoriteVC: UITableViewController {
             tableView.setEditing(!tableView.isEditing, animated: true)
             navigationItem.rightBarButtonItem?.title = tableView.isEditing ? "Done" : "Edit"
         }
-        
     }
     
     
@@ -86,10 +78,6 @@ class FavoriteVC: UITableViewController {
             print("there is some error")
         }
     }
-    
-    
-  
-    
     
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -161,8 +149,6 @@ class FavoriteVC: UITableViewController {
             
             return UISwipeActionsConfiguration(actions: [modifyAction])
         }
-        
     }
-    
     
 }

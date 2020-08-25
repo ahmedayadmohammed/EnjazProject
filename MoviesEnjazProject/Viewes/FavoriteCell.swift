@@ -21,7 +21,7 @@ class FavoriteCell: UITableViewCell {
         super.awakeFromNib()
        moviePhoto.layer.cornerRadius = 4
        moviePhoto.addWhiteShadow()
-  
+
     }
 
 

@@ -10,51 +10,34 @@ import UIKit
 import Kingfisher
 import CoreData
 
-typealias seriesMethods = UICollectionViewDelegate & UICollectionViewDataSource
+
+
 class HomeTVC: UITableViewController {
     
     @IBOutlet weak var seriesCollection: UICollectionView!
     
     private var moviesData:[MovieFavorite]?
-    private var movieListVM : MoviesListViewModle!
-    private var seriesListVM : SeriesListViewModle!
+    private var movieListVM = MoviesListViewModle()
+    private var seriesListVM = SeriesListViewModle()
     var Headerview : UIView!
     var NewHeaderLayer : CAShapeLayer!
-    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        let Headerheight : CGFloat = 333
+    let Headerheight : CGFloat = 333
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        delegatesSeries()
+        movieListVM.binding(delegate: self)
+        movieListVM.getMoviesList(controller: self)
+        seriesListVM.binding(seriesDelegate: self)
+        seriesListVM.getSeriesList(controller: self)
+        configCollectionView()
         tableView.rowHeight = UITableView.automaticDimension
-        getMoviesList()
-        getSeriesList()
+        
     }
     
-    func delegatesSeries(){
+    func configCollectionView(){
         seriesCollection.delegate = self
         seriesCollection.dataSource = self
-    }
-    
-    
-    func getMoviesList(){
-        MoviesApiRequest.request.getMovies(viewController: self) {[weak self] (data) in
-            if let movieList = data {
-                self?.movieListVM = MoviesListViewModle(movies: movieList)
-                self?.tableView.reloadData()
-            }
-        }
-    }
-    
-    
-    func getSeriesList(){
-        SeriesApiRequest.request.getSeries(viewController: self) {[weak self] (series) in
-            if let seriesList = series {
-                self?.seriesListVM = SeriesListViewModle(series: seriesList)
-                self?.seriesCollection.reloadData()
-            }
-        }
     }
     
     
@@ -73,20 +56,13 @@ class HomeTVC: UITableViewController {
             fatalError("MoviesCell not found")
         }
         let movieVM = self.movieListVM.movieIndex(indexPath.row)
-        movieCell.movieName.text = movieVM.originalTitle
-        movieCell.movieLanguage.text = movieVM.originalLanguage
-        movieCell.moviesDescription.text = movieVM.overView
-        movieCell.movieRating.rating = movieVM.voteAverage - 3
-        movieCell.movieReleaseDate.text = movieVM.releaseDate
+        movieCell.movie = movieVM
         movieCell.delegate = self
         movieCell.indexPath = indexPath
-        getImage(image: movieCell.moviePhoto, cellUrl: movieVM.posterPath)
         
         return movieCell
         
     }
-    
-    
     
 }
 
@@ -94,20 +70,18 @@ extension HomeTVC : AddToFavorite {
     func addFavoriteMovies(indexPath: IndexPath) {
         let movieVM = self.movieListVM.movieIndex(indexPath.row)
         let newMovie = MovieFavorite(context: context)
-        newMovie.language = movieVM.originalLanguage
-        newMovie.overview = movieVM.overView
-        newMovie.raring = movieVM.voteAverage - 3
-        newMovie.releasedate = movieVM.releaseDate
-        newMovie.title = movieVM.originalTitle
-        newMovie.photo = movieVM.posterPath
+        newMovie.language = movieVM?.originalLanguage
+        newMovie.overview = movieVM?.overView
+        newMovie.raring = (movieVM?.voteAverage ?? 0) - 3
+        newMovie.releasedate = movieVM?.releaseDate
+        newMovie.title = movieVM?.originalTitle
+        newMovie.photo = movieVM?.posterPath
         do {
             try self.context.save()
         } catch {
             print("erro in saving the data")
         }
     }
-    
-    
 }
 
 
@@ -116,19 +90,31 @@ extension HomeTVC : seriesMethods {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let seriesCell : SeriesCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SeriesCell", for: indexPath) as! SeriesCell
         let seriesVM = self.seriesListVM.SeriesIndex(indexPath.row)
-        seriesCell.SeriesName.text = seriesVM.name
-        seriesCell.releaseDate.text = seriesVM.date
-        seriesCell.seriesRate.rating = seriesVM.vote - 3
-        getImage(image: seriesCell.seriesPhoto, cellUrl: seriesVM.photo)
-        
+        seriesCell.series = seriesVM
         return seriesCell
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.seriesListVM.numberOfRowsInSection(section)
     }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return self.seriesListVM == nil ? 0 : self.seriesListVM.numberOfSections
+    }
+    
+    
+}
+
+
+extension HomeTVC : MoviesViewModelDelegate {
+    func seriesLoadedSuccessfully(series: [SeriesResult]) {
+        self.seriesListVM = SeriesListViewModle(series: series)
+        self.seriesCollection.reloadData()
+    }
+    
+    func moviesLoadedSuccessfully(movies: [MoviesResults]) {
+        self.movieListVM = MoviesListViewModle(movies: movies)
+        self.tableView.reloadData()
     }
     
     

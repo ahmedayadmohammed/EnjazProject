@@ -11,7 +11,7 @@ import UIKit
 
 class MoviesApiRequest {
     static let request = MoviesApiRequest()
-    func getMovies(viewController:UIViewController,completionHandler : @escaping (_ movie:[Result]?)->()){
+    func getMovies(viewController:UIViewController,completionHandler : @escaping (_ movie:[MoviesResults]?)->()){
         guard let url = URL(string: "https://api.themoviedb.org/3/discover/movie?api_key=c15055372aa36c901941dfb88fd403ae&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1") else {return}
         httpRequest(vc: viewController, url: url, httpMethod: .get, parameters: nil, headers: nil) { (rest:Swift.Result<Movies,Error>?) in
             if let movieData = rest {

@@ -15,10 +15,22 @@ class SeriesCell: UICollectionViewCell {
     @IBOutlet weak var releaseDate: UILabel!
     @IBOutlet weak var seriesRate: CosmosView!
     
+    var series : SeriesViewModel? {
+        didSet {
+            setUpData()
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
        seriesPhoto.layer.cornerRadius = 4
+    }
+    
+    func setUpData(){
+        SeriesName.text = series?.name
+        releaseDate.text = series?.date
+        seriesRate.rating = (series?.vote ?? 0.0) - 3
+        getImage(image: seriesPhoto, cellUrl: series?.photo ?? "")
     }
     
   

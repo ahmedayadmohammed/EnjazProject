@@ -12,7 +12,7 @@ import UIKit
 // MARK: - Movies
 struct Movies: Codable {
     let page, totalResults, totalPages: Int?
-    let results: [Result]?
+    let results: [MoviesResults]?
 
     enum CodingKeys: String, CodingKey {
         case page
@@ -23,7 +23,7 @@ struct Movies: Codable {
 }
 
 // MARK: - Result
-struct Result: Codable {
+struct MoviesResults: Codable {
     let popularity: Double?
     let voteCount: Int?
     let video: Bool?

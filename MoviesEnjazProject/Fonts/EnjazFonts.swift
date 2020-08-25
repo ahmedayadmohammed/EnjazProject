@@ -7,7 +7,10 @@
 //
 
 import Foundation
+import UIKit
+
 let localize = Locale.current.languageCode
+typealias seriesMethods = UICollectionViewDelegate & UICollectionViewDataSource
 
 enum MovieFonts : String {
     case AvenirNextRegular   = "AvenirNext-Regular"

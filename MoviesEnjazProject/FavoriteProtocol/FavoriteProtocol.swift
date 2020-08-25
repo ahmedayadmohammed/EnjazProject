@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+
 protocol AddToFavorite {
     func addFavoriteMovies(indexPath:IndexPath)
 }

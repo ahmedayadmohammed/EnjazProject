@@ -7,22 +7,23 @@
 //
 
 import Foundation
+import UIKit
+
+protocol MoviesViewModelDelegate {
+    func moviesLoadedSuccessfully(movies:[MoviesResults])
+    func seriesLoadedSuccessfully(series:[SeriesResult])
+}
+
 struct MovieViewModel {
-    private let movie : Result
+    private let movie : MoviesResults
     
 }
 
 extension MovieViewModel {
-    init(_ movie:Result) {
+    init(_ movie:MoviesResults) {
         self.movie = movie
     }
     
-    var popularity : Double{
-        return self.movie.popularity ?? 0.0
-    }
-    var voteCount : Int {
-        return self.movie.voteCount ?? 0
-    }
     var posterPath : String {
         return self.movie.posterPath ?? ""
     }
@@ -56,18 +57,51 @@ extension MovieViewModel {
     
 }
 
-struct MoviesListViewModle {
-    let movies: [Result]
-    func numberOfRowsInSection(_ section: Int) -> Int {
-        return self.movies.count
+class MoviesListViewModle {
+    var delegate : MoviesViewModelDelegate?
+    
+    var movies: [MoviesResults]?
+    
+    init(movies : [MoviesResults]) {
+        self.movies = movies
+    }
+    init() {
+        
     }
     
-    func movieIndex(_ index: Int) -> MovieViewModel {
-        let movie = self.movies[index]
-        return MovieViewModel(movie)
+    func binding(delegate :MoviesViewModelDelegate ){
+        self.delegate = delegate
+    }
+    
+     func getMoviesList(controller :UIViewController){
+        MoviesApiRequest.request.getMovies(viewController: controller) { (data) in
+            if let movieList = data {
+                self.delegate?.moviesLoadedSuccessfully(movies: movieList)
+                
+            }
+        }
+    }
+    
+    
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        if let movieCount = self.movies?.count {
+            return movieCount
+        } else {
+            return 0
+        }
+       
+    }
+    
+    func movieIndex(_ index: Int) -> MovieViewModel? {
+        if let movie = self.movies?[index] {
+            return MovieViewModel(movie)
+        }
+        
+        return nil
+        
     }
     
     var numberOfSections: Int {
-          return 1
-      }
+        return 1
+    }
 }

@@ -120,14 +120,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		E7013E2524F46A6D0063FBEE /* NetWorking */ = {
+		E7013E2524F46A6D0063FBEE /* Networking */ = {
 			isa = PBXGroup;
 			children = (
 				E7013E2624F46A900063FBEE /* NetworkLayer.swift */,
 				E7013E3024F4719D0063FBEE /* MoviesWebServices.swift */,
 				E7013E3824F4840C0063FBEE /* ImageServices.swift */,
 			);
-			path = NetWorking;
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		E7013E2824F46B110063FBEE /* Model */ = {
@@ -209,7 +209,7 @@
 				E7013E3E24F497260063FBEE /* CoreModel */,
 				E7013E2D24F46CB90063FBEE /* View model */,
 				E7013E2824F46B110063FBEE /* Model */,
-				E7013E2524F46A6D0063FBEE /* NetWorking */,
+				E7013E2524F46A6D0063FBEE /* Networking */,
 				E7013E2224F4642A0063FBEE /* Extensions */,
 				E7013E1D24F45D1E0063FBEE /* Viewes */,
 				E7EAB1E724F45C8700C5ABD2 /* Core */,

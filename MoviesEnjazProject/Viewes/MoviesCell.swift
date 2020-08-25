@@ -27,6 +27,12 @@ class MoviesCell: UITableViewCell {
     let stepBag = DisposeBag()
     var delegate : AddToFavorite?
     var indexPath : IndexPath?
+    var movie : MovieViewModel? {
+        didSet {
+            setUpData()
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         setUpUI()
@@ -39,7 +45,14 @@ class MoviesCell: UITableViewCell {
         addToFavorite.isUserInteractionEnabled = true
     }
     
-    
+    func setUpData(){
+        movieName.text = movie?.originalTitle ?? ""
+        movieLanguage.text = movie?.originalLanguage ?? ""
+        moviesDescription.text = movie?.overView
+        movieRating.rating = (movie?.voteAverage ?? 0.0) - 3
+        movieReleaseDate.text = movie?.releaseDate
+        getImage(image:moviePhoto, cellUrl: movie?.posterPath ?? "")
+    }
     
     func addFavoriteMovieMethod(){
         addToFavorite.rx
@@ -59,25 +72,25 @@ class MoviesCell: UITableViewCell {
     func changeLikeImageTintColor(){
         switch localize {
         case "ar":
-        self.likeImage.tintColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
-              self.favLabel.text = "تم الاضافة 😍"
-              self.favLabel.font = UIFont(name:MovieFonts.AvenirNextBold.rawValue, size: 14)
-              Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {[weak self] (nil) in
-                  self?.likeImage.tintColor = #colorLiteral(red: 0.9772720933, green: 0.8132748604, blue: 0.0566014275, alpha: 1)
-                  self?.favLabel.text = "أضافة الى المفضلة"
-                  self?.favLabel.font = UIFont(name:MovieFonts.AvenirNextRegular.rawValue , size: 14)
-              }
+            self.likeImage.tintColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+            self.favLabel.text = "تم الاضافة 😍"
+            self.favLabel.font = UIFont(name:MovieFonts.AvenirNextBold.rawValue, size: 14)
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {[weak self] (nil) in
+                self?.likeImage.tintColor = #colorLiteral(red: 0.9772720933, green: 0.8132748604, blue: 0.0566014275, alpha: 1)
+                self?.favLabel.text = "أضافة الى المفضلة"
+                self?.favLabel.font = UIFont(name:MovieFonts.AvenirNextRegular.rawValue , size: 14)
+            }
         default :
-        self.likeImage.tintColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
-              self.favLabel.text = "Added 😍"
-              self.favLabel.font = UIFont(name:MovieFonts.AvenirNextBold.rawValue, size: 14)
-              Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {[weak self] (nil) in
-                  self?.likeImage.tintColor = #colorLiteral(red: 0.9772720933, green: 0.8132748604, blue: 0.0566014275, alpha: 1)
-                  self?.favLabel.text = "Add to favorite"
-                  self?.favLabel.font = UIFont(name:MovieFonts.AvenirNextRegular.rawValue , size: 14)
-              }
+            self.likeImage.tintColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+            self.favLabel.text = "Added 😍"
+            self.favLabel.font = UIFont(name:MovieFonts.AvenirNextBold.rawValue, size: 14)
+            Timer.scheduledTimer(withTimeInterval: 1, repeats: false) {[weak self] (nil) in
+                self?.likeImage.tintColor = #colorLiteral(red: 0.9772720933, green: 0.8132748604, blue: 0.0566014275, alpha: 1)
+                self?.favLabel.text = "Add to favorite"
+                self?.favLabel.font = UIFont(name:MovieFonts.AvenirNextRegular.rawValue , size: 14)
+            }
         }
-      
+        
     }
     
     
