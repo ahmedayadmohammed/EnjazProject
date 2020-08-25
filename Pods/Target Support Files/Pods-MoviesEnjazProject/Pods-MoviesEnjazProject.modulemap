@@ -1,0 +1,6 @@
+framework module Pods_MoviesEnjazProject {
+  umbrella header "Pods-MoviesEnjazProject-umbrella.h"
+
+  export *
+  module * { export * }
+}
