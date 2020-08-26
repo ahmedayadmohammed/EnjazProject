@@ -9,35 +9,64 @@
 import UIKit
 import Kingfisher
 import CoreData
-
-
+import Reachability
 
 class HomeTVC: UITableViewController {
     
+    @IBOutlet weak var generesCollectionView: UICollectionView!
     @IBOutlet weak var seriesCollection: UICollectionView!
     
     private var moviesData:[MovieFavorite]?
     private var movieListVM = MoviesListViewModle()
     private var seriesListVM = SeriesListViewModle()
-    var Headerview : UIView!
-    var NewHeaderLayer : CAShapeLayer!
+    private var genersListVM = GenersListViewModel()
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    let Headerheight : CGFloat = 333
+    let reachability = try! Reachability()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        movieListVM.binding(delegate: self)
-        movieListVM.getMoviesList(controller: self)
+        movieListVM.bindDelegate(delegate: self)
         seriesListVM.binding(seriesDelegate: self)
-        seriesListVM.getSeriesList(controller: self)
+        genersListVM.binding(delegate: self)
         configCollectionView()
         tableView.rowHeight = UITableView.automaticDimension
-        
     }
     
     func configCollectionView(){
         seriesCollection.delegate = self
         seriesCollection.dataSource = self
+        generesCollectionView.delegate = self
+        generesCollectionView.dataSource = self
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
+        do{
+            try reachability.startNotifier()
+        }catch{
+            print("could not start reachability notifier")
+        }
+        
+    }
+    
+    @objc func reachabilityChanged(note: Notification) {
+        let reachability = note.object as! Reachability
+        switch reachability.connection {
+        case .wifi:
+            genersListVM.getGenersList(contoller: self)
+            movieListVM.getMoviesList(controller: self)
+            seriesListVM.getSeriesList(controller: self)
+        case .cellular:
+            genersListVM.getGenersList(contoller: self)
+            movieListVM.getMoviesList(controller: self)
+            seriesListVM.getSeriesList(controller: self)
+        case .unavailable:
+            self.alert(title: "Network Error", messsage: "There is no network please check your internet connection")
+        default:break
+        }
     }
     
     
@@ -88,25 +117,47 @@ extension HomeTVC : AddToFavorite {
 extension HomeTVC : seriesMethods {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let seriesCell : SeriesCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SeriesCell", for: indexPath) as! SeriesCell
-        let seriesVM = self.seriesListVM.SeriesIndex(indexPath.row)
-        seriesCell.series = seriesVM
-        return seriesCell
+        
+        if collectionView == collectionView.viewWithTag(1){
+            let seriesCell : SeriesCell = collectionView.dequeueReusableCell(withReuseIdentifier: "SeriesCell", for: indexPath) as! SeriesCell
+            let seriesVM = self.seriesListVM.SeriesIndex(indexPath.row)
+            seriesCell.series = seriesVM
+            return seriesCell
+        } else {
+            let generesCell : GenersCell = collectionView.dequeueReusableCell(withReuseIdentifier: "GenersCell", for: indexPath) as! GenersCell
+            let genersVM = self.genersListVM.genersIndex(indexPath.row)
+            generesCell.geners = genersVM
+            return generesCell
+        }
+        
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.seriesListVM.numberOfRowsInSection(section)
+        if collectionView == collectionView.viewWithTag(1) {
+            return self.seriesListVM.numberOfRowsInSection(section)
+        } else {
+            return self.genersListVM.numberOfRowsInSection(section)
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return self.seriesListVM == nil ? 0 : self.seriesListVM.numberOfSections
+        if collectionView == collectionView.viewWithTag(1) {
+            return self.seriesListVM == nil ? 0 : self.seriesListVM.numberOfSections
+        } else {
+            return self.genersListVM == nil ?0 : self.genersListVM.numberOfSections
+        }
     }
-    
     
 }
 
 
 extension HomeTVC : MoviesViewModelDelegate {
+    func genersLoadedSuccessfully(geners: [Genre]) {
+        self.genersListVM = GenersListViewModel(geners: geners)
+        self.generesCollectionView.reloadData()
+    }
+    
     func seriesLoadedSuccessfully(series: [SeriesResult]) {
         self.seriesListVM = SeriesListViewModle(series: series)
         self.seriesCollection.reloadData()

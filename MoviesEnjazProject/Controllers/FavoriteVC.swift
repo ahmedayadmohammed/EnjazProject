@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 import AudioToolbox
 
+
 class FavoriteVC: UITableViewController {
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -66,9 +67,9 @@ class FavoriteVC: UITableViewController {
         do {
             self.movies = try context.fetch(MovieFavorite.fetchRequest())
             if self.movies!.count > 0 {
-                self.title = "Favorites"
+                self.navigationItem.title = "Favorites"
             } else {
-                self.title = "Nothing to show"
+                self.navigationItem.title = "Nothing to show"
             }
             DispatchQueue.main.async {
                 self.tableView.reloadData()

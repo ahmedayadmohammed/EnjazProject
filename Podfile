@@ -15,5 +15,8 @@ target 'MoviesEnjazProject' do
      pod 'Cosmos'
      pod "SkeletonView"
      pod 'SnapKit'
+     pod 'paper-onboarding'
+     pod 'SwiftKeychainWrapper'
+     pod 'ReachabilitySwift'
 
 end

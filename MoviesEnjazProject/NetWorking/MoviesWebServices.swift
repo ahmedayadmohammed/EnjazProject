@@ -52,3 +52,25 @@ class SeriesApiRequest {
 }
 
 
+
+class GeneresServices {
+    static let request = GeneresServices()
+    func getGeners(viewController:UIViewController,completionHandler : @escaping (_ movie:[Genre]?)->()){
+        guard let url = URL(string: "https://api.themoviedb.org/3/genre/movie/list?api_key=c15055372aa36c901941dfb88fd403ae&language=en-US") else {return}
+        httpRequest(vc: viewController, url: url, httpMethod: .get, parameters: nil, headers: nil) { (rest:Swift.Result<Generes,Error>?) in
+            if let movieData = rest {
+                switch movieData {
+                case.success(let done):
+                    if let data = done.genres {
+                        completionHandler(data)
+                    }
+                case.failure(let error):
+                    viewController.alert(title: "Error", messsage: error.localizedDescription)
+                }
+            }
+        }
+        
+    
+    }
+}
+

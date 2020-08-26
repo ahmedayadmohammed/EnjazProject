@@ -12,6 +12,7 @@ import UIKit
 protocol MoviesViewModelDelegate {
     func moviesLoadedSuccessfully(movies:[MoviesResults])
     func seriesLoadedSuccessfully(series:[SeriesResult])
+    func genersLoadedSuccessfully(geners:[Genre])
 }
 
 struct MovieViewModel {
@@ -65,11 +66,9 @@ class MoviesListViewModle {
     init(movies : [MoviesResults]) {
         self.movies = movies
     }
-    init() {
-        
-    }
+    init() {}
     
-    func binding(delegate :MoviesViewModelDelegate ){
+    func bindDelegate(delegate :MoviesViewModelDelegate ){
         self.delegate = delegate
     }
     
@@ -89,16 +88,13 @@ class MoviesListViewModle {
         } else {
             return 0
         }
-       
     }
     
     func movieIndex(_ index: Int) -> MovieViewModel? {
         if let movie = self.movies?[index] {
             return MovieViewModel(movie)
         }
-        
         return nil
-        
     }
     
     var numberOfSections: Int {
