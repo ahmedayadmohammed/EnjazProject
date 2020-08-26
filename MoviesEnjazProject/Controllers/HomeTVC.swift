@@ -31,6 +31,7 @@ class HomeTVC: UITableViewController {
         genersListVM.binding(delegate: self)
         configCollectionView()
         tableView.rowHeight = UITableView.automaticDimension
+        setLanguageDirection()
     }
     
     func configCollectionView(){
@@ -38,6 +39,15 @@ class HomeTVC: UITableViewController {
         seriesCollection.dataSource = self
         generesCollectionView.delegate = self
         generesCollectionView.dataSource = self
+    }
+    
+    
+    func setLanguageDirection(){
+        if localize == "ar" {
+             UIView.appearance().semanticContentAttribute = .forceRightToLeft
+        }else {
+             UIView.appearance().semanticContentAttribute = .forceLeftToRight
+        }
     }
     
     
