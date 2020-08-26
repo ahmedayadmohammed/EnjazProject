@@ -27,7 +27,7 @@ struct SeriesResult: Codable {
     let genreIDS: [Int]?
     let name: String?
     let popularity: Double?
-    let originCountry: [OriginCountry]?
+    let originCountry: [String]?
     let voteCount: Int?
     let firstAirDate, backdropPath: String?
     let originalLanguage: String?
@@ -51,14 +51,3 @@ struct SeriesResult: Codable {
     }
 }
 
-enum OriginCountry: String, Codable {
-    case ca = "CA"
-    case gb = "GB"
-    case kr = "KR"
-    case us = "US"
-}
-
-enum OriginalLanguage: String, Codable {
-    case en = "en"
-    case ko = "ko"
-}
