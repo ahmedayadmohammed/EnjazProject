@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - Series
+// MARK: - Generes
 struct Series: Codable {
     let page, totalResults, totalPages: Int?
     let results: [SeriesResult]?
@@ -30,7 +30,7 @@ struct SeriesResult: Codable {
     let originCountry: [OriginCountry]?
     let voteCount: Int?
     let firstAirDate, backdropPath: String?
-    let originalLanguage: OriginalLanguage?
+    let originalLanguage: String?
     let id: Int?
     let voteAverage: Double?
     let overview, posterPath: String?
@@ -52,14 +52,13 @@ struct SeriesResult: Codable {
 }
 
 enum OriginCountry: String, Codable {
+    case ca = "CA"
     case gb = "GB"
-    case jp = "JP"
     case kr = "KR"
     case us = "US"
 }
 
 enum OriginalLanguage: String, Codable {
     case en = "en"
-    case ja = "ja"
     case ko = "ko"
 }
